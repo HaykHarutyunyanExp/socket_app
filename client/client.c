@@ -67,19 +67,6 @@ main()
                         exit(3);
                     }
                     
-
-                    //FILE* filePtr;
-                    //char buffer[BUFFER_SIZE];
-                    //filePtr = fopen("output.txt", "r");
-
-                    //while (!feof(filePtr) && !ferror(filePtr)) {
-
-                    //    if (fgets(buffer, BUFFER_SIZE, filePtr) != NULL) {
-                    //        printf("%s", buffer);
-                    //    }
-
-                    //}
-                    ///fclose(filePtr);
                     printf("%s\n", server_reply);
                     if (strncmp(server_reply, "Disconnected", strlen("Disconnected")) == 0) break;
 
