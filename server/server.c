@@ -9,7 +9,7 @@ main()
         perror("Failed to create socket!\n");
         return 1;
     }
-    puts("Socket created...");
+    printf("Socket created...\n");
 
     struct sockaddr_in server;
 
@@ -22,19 +22,19 @@ main()
         perror("Failed to bind!");
         return 2;
     }
-    puts("Binding completed...");
+    printf("Binding completed...\n");
 
     /// Listen
     if (listen(socket_fd, MAX_CLIENT) < 0) {
         perror("Failed to listen!");
         return 3;
     }
-    puts("Listening completed...");
+    printf("Listening completed...\n");
 
     outputAdrressPortNumber();
 
     //Accept and incoming connection
-    puts("Waiting for incoming connections...");
+    printf("Waiting for incoming connections...\n");
     int c = sizeof(struct sockaddr_in);
 
     int client_sock;
@@ -43,7 +43,7 @@ main()
 
     while ( (client_sock = accept(socket_fd, (struct sockaddr*)&client, (socklen_t*)&c)) ) {
 
-        puts("Connection accepted");
+        printf("Connection accepted\n");
 
         pthread_t sniffer_thread;
         new_sock = malloc(1);
@@ -56,12 +56,12 @@ main()
 
         //Now join the thread , so that we dont terminate before the thread
         //pthread_join( sniffer_thread , NULL);
-        puts("Handler assigned");
+        printf("Handler assigned\n");
 
     }
     
     if (client_sock < 0) {
-        perror("Failed to accept!");
+        perror("Failed to accept!\n");
         return 5;
     }
 
@@ -120,7 +120,7 @@ connection_handler(void* socket_desc)
     }
 
     if (read_size == 0) {
-        puts("Client disconnected");
+        printf("Client disconnected\n");
         write(sock , "Disconnected", 12);
         fflush(stdout);
     } else if (read_size == -1) {
