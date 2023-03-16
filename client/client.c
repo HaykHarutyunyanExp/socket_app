@@ -67,19 +67,20 @@ main()
                         exit(3);
                     }
                     
-                    FILE* filePtr;
-                    char buffer[BUFFER_SIZE];
-                    filePtr = fopen("output.txt", "r");
 
-                    while (!feof(filePtr) && !ferror(filePtr)) {
+                    //FILE* filePtr;
+                    //char buffer[BUFFER_SIZE];
+                    //filePtr = fopen("output.txt", "r");
 
-                        if (fgets(buffer, BUFFER_SIZE, filePtr) != NULL) {
-                            printf("%s", buffer);
-                        }
+                    //while (!feof(filePtr) && !ferror(filePtr)) {
 
-                    }
-                    fclose(filePtr);
-                    ///puts(server_reply);
+                    //    if (fgets(buffer, BUFFER_SIZE, filePtr) != NULL) {
+                    //        printf("%s", buffer);
+                    //    }
+
+                    //}
+                    ///fclose(filePtr);
+                    printf("%s\n", server_reply);
                     if (strncmp(server_reply, "Disconnected", strlen("Disconnected")) == 0) break;
 
                     memset(command, '\0', MAX_COMMAND_LENGTH);
