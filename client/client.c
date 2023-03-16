@@ -10,26 +10,27 @@ main()
         //Create socket
         int sock = socket(AF_INET , SOCK_STREAM , 0);
         if (sock == -1) {
-            printf("Could not create socket");
+            perror("Could not create socket");
+            exit(1);
         }
-        puts("Socket created...");
-        puts("To connect to a server.\n\tconnect <IP_ADDRESS> <PORT>");
+        printf("\nSocket created...");
+        printf("\nTo connect to a server.\n\tconnect <IP_ADDRESS> <PORT>");
 
         char server_reply[MAX_SERVER_REAPLY] = {0};
         char command[MAX_COMMAND_LENGTH] = {0};
 
         char* s[3]; /// array to store command, address, and port
 
-        printf("Client> ");
+        printf("\nClient> ");
         fgets(command, MAX_COMMAND_LENGTH, stdin);
 
         /// get the first token
         char* token = strtok(command, " ");
         s[0] = token;
 
-        for (int i = 1; i < 3; ++i) {
-            token = strtok(NULL, " ");
+        for (int i = 0; token != NULL; ++i) {
             s[i] = token;
+            token = strtok(NULL, " ");
         }
 
         if (strncmp(s[0], "exit", strlen("exit")) == 0) {
@@ -46,24 +47,24 @@ main()
                 perror("connect failed. Error");
                 continue;
             } else {
-                puts("Connected\n");
+                printf("Connected\n");
                 //keep communicating with server
                 while(1) {
 
-                    printf("Client> ");
+                    printf("\nClient> ");
                     fgets(command, MAX_COMMAND_LENGTH, stdin);
                     if (strncmp(command, "\n", 1) == 0) { continue; }
                     
                     //Send some data
                     if (send(sock , command , strlen(command) , 0) < 0) {
-                        puts("Send failed");
-                        return 3;
+                        perror("Send failed");
+                        exit(2);
                     }
                     
                     //Receive a reply from the server
                     if (recv(sock , server_reply , MAX_SERVER_REAPLY, 0) < 0) {
-                        puts("recv failed");
-                        return 2;
+                        perror("recv failed");
+                        exit(3);
                     }
                     
                     FILE* filePtr;
@@ -88,7 +89,7 @@ main()
             }
 
         } else {
-            puts("Command not found!");
+            printf("\nCommand not found!");
         }
 
         close(sock);
