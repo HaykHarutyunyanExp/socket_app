@@ -7,7 +7,7 @@ main()
 
     if (socket_fd == -1) {
         perror("Failed to create socket!\n");
-        return 1;
+        exit(1);
     }
     printf("Socket created...\n");
 
@@ -20,14 +20,14 @@ main()
     /// Binding
     if (bind(socket_fd, (struct sockaddr*)&server, sizeof(server)) < 0) {
         perror("Failed to bind!");
-        return 2;
+        exit(2);
     }
     printf("Binding completed...\n");
 
     /// Listen
     if (listen(socket_fd, MAX_CLIENT) < 0) {
         perror("Failed to listen!");
-        return 3;
+        exit(3);
     }
     printf("Listening completed...\n");
 
@@ -51,7 +51,7 @@ main()
 
         if (pthread_create(&sniffer_thread, NULL, connection_handler, (void*) new_sock) < 0) {
             perror("Failed to create thread!");
-            return 4;
+            exit(4);
         }
 
         //Now join the thread , so that we dont terminate before the thread
@@ -62,7 +62,7 @@ main()
     
     if (client_sock < 0) {
         perror("Failed to accept!\n");
-        return 5;
+        exit(5);
     }
 
     return 0;
@@ -101,21 +101,16 @@ connection_handler(void* socket_desc)
             write(sock, "Unsafe command!", 16); continue;
 
         } else {
-
-            FILE* filePtr = fopen("output.txt", "w");
-
-            char command_with_redirect[MAX_LENGTH] = {0};
-            snprintf(command_with_redirect, sizeof(command_with_redirect), "%s > output.txt 2>&1", client_command);
-            system(command_with_redirect);
-
+            FILE* filePtr = popen(client_command, "r");
             memset(client_command, '\0', MAX_LENGTH);
+            int n;
 
-            filePtr = fopen("output.txt", "r");
-            
-            write(sock , filePtr, 100);
+            while ( (n = fread(client_command, 1, MAX_LENGTH, filePtr) ) > 0) {
+                client_command[n] = '\0';
+            }
 
-            fclose(filePtr);
-
+            write(sock, client_command, MAX_LENGTH);
+            pclose(filePtr);
         }
     }
 
